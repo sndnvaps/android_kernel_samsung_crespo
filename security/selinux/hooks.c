@@ -1843,7 +1843,7 @@ static int selinux_binder_transfer_binder(struct task_struct *from, struct task_
   u32 tosid = task_sid(to);
   
 
-  return avc_has_perm(fromsid, tosid, SECCLASS_BINDER, BINDER__RECEIVE, NULL);
+  return avc_has_perm(fromsid, tosid, SECCLASS_BINDER, BINDER__TRANSFER, NULL);
 }
 
 static int selinux_binder_transfer_file(struct task_struct *from, struct task_struct *to, struct file *file)

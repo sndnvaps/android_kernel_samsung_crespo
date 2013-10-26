@@ -18,6 +18,23 @@
 #include <linux/netfilter/x_tables.h>
 #include <linux/netfilter_ipv4/ip_tables.h>
 #include <linux/netfilter_ipv4/ipt_ECN.h>
+#include <linux/netfilter/xt_DSCP.h>
+
+#ifndef XT_DSCP_MASK 
+#define XT_DSCP_MASK 0xfc
+#endif
+
+#ifndef XT_DSCP_SHIFT 
+#define XT_DSCP_SHIFT 2
+#endif
+
+#ifndef XT_DSCP_MAX 
+#define XT_DSCP_MAX 0x3f
+#endif
+
+
+
+
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Harald Welte <laforge@netfilter.org>");
