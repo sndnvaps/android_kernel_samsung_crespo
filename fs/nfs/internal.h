@@ -274,8 +274,9 @@ extern void nfs_sb_active(struct super_block *sb);
 extern void nfs_sb_deactive(struct super_block *sb);
 
 /* namespace.c */
+#define NFS_PATH_CANONICAL 1
 extern char *nfs_path(char **p, struct dentry *dentry,
-		      char *buffer, ssize_t buflen);
+		      char *buffer, ssize_t buflen, unsigned flags);
 extern struct vfsmount *nfs_d_automount(struct path *path);
 
 /* getroot.c */
@@ -346,10 +347,10 @@ extern int _nfs4_call_sync_session(struct rpc_clnt *clnt,
  * Determine the device name as a string
  */
 static inline char *nfs_devname(struct dentry *dentry,
-				char *buffer, ssize_t buflen)
+				char *buffer, ssize_t buflen,)
 {
 	char *dummy;
-	return nfs_path(&dummy, dentry, buffer, buflen);
+	return nfs_path(&dummy, dentry, buffer, buflen, NFS_PATH_CANONICAL);
 }
 
 /*
