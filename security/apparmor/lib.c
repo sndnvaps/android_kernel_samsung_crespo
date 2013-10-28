@@ -45,7 +45,7 @@ char *aa_split_fqname(char *fqname, char **ns_name)
 		*ns_name = skip_spaces(&name[1]);
 		if (split) {
 			/* overwrite ':' with \0 */
-                    split++ = 0;
+                    *split++ = 0;
                    if (strncmp(split, "//", 2) == 0)
                          split += 2;
                     name = skip_spaces(split);
@@ -88,7 +88,7 @@ void aa_info_message(const char *str)
  * It is possible that policy being loaded from the user is larger than
  * what can be allocated by kmalloc, in those cases fall back to vmalloc.
  */
-void *__aa_kvmalloc(size_t size)
+void *__aa_kvmalloc(size_t size, gfp_t flags)
 {
 	void *buffer = NULL;
 

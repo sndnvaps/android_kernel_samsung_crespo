@@ -396,7 +396,7 @@ static int aa_fs_seq_profname_show(struct seq_file *seq, void *v)
 
 static int aa_fs_seq_profname_open(struct inode *inode, struct file *file)
 {
-+  return aa_fs_seq_profile_open(inode, file, aa_fs_seq_profname_show);
+ return aa_fs_seq_profile_open(inode, file, aa_fs_seq_profname_show);
 }
 
 static const struct file_operations aa_fs_profname_fops = {
@@ -412,7 +412,8 @@ static int aa_fs_seq_profmode_show(struct seq_file *seq, void *v)
   struct aa_replacedby *r = seq->private;
   struct aa_label *label = aa_get_label_rcu(&r->label);
   struct aa_profile *profile = labels_profile(label);
-  seq_printf(seq, "%s\n", aa_profile_mode_names[profile->mode]);+  aa_put_label(label);
+  seq_printf(seq, "%s\n", aa_profile_mode_names[profile->mode]);
+  aa_put_label(label);
 
   return 0;
 }
@@ -1102,7 +1103,7 @@ static int __init aa_create_aafs(void)
 	if (!apparmor_initialized)
 		return 0;
 
-	if (aa_fs_dentry.dentry) {
+	if (aa_fs_entry.dentry) {
 		AA_ERROR("%s: AppArmor securityfs already exists\n", __func__);
 		return -EEXIST;
 	}

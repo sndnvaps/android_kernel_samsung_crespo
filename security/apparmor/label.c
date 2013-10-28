@@ -92,7 +92,7 @@ int aa_label_next_confined(struct aa_label *l, int i)
   return i;
 }
 
-+static bool profile_in_label(struct aa_profile *profile, struct aa_label *l)
+static bool profile_in_label(struct aa_profile *profile, struct aa_label *l)
 {
   struct aa_profile *p;
   int i;

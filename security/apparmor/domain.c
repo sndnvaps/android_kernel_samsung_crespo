@@ -783,7 +783,7 @@ int aa_change_profile(const char *ns_name, const char *hname, bool onexec,
 		      bool permtest)
 {
 	const struct cred *cred;
-	struct aa_label *label
+	struct aa_label *label;
 	struct aa_profile *profile, *target = NULL;
 	struct aa_namespace *ns = NULL;
 	struct file_perms perms = {};

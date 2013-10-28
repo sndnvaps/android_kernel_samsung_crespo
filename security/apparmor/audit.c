@@ -127,7 +127,7 @@ static void audit_pre(struct audit_buffer *ab, void *ca)
 		audit_log_string(ab, op_table[aad(sa)->op]);
 	}
 
-	if (aad(sa)->nfo) {
+	if (aad(sa)->info) {
 		audit_log_format(ab, " info=");
                 audit_log_string(ab, aad(sa)->info);
                 if (aad(sa)->error)

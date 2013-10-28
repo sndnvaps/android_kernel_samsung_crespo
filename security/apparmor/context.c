@@ -91,7 +91,7 @@ struct aa_label *aa_get_task_label(struct task_struct *task)
  * 
  * Returns: 0 or error on failure
  */
-int aa_replace_current_label(struct aa_profile *label)
+int aa_replace_current_label(struct aa_label *label)
 {
 	struct aa_task_cxt *cxt = current_cred()->security;
 	struct cred *new;
@@ -125,7 +125,7 @@ int aa_replace_current_label(struct aa_profile *label)
  *
  * Returns: 0 or error on failure
  */
-int aa_set_current_onexec(struct aa_profile *label)
+int aa_set_current_onexec(struct aa_label *label)
 {
 	struct aa_task_cxt *cxt;
 	struct cred *new = prepare_creds();
