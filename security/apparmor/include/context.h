@@ -204,7 +204,7 @@ static inline struct aa_label *aa_current_label(void)
 */
 static inline void aa_clear_task_cxt_trans(struct aa_task_cxt *cxt)
 {
-   a_put_label(cxt->previous);
+   aa_put_label(cxt->previous);
    aa_put_label(cxt->onexec);
    cxt->previous = NULL;
    cxt->onexec = NULL;

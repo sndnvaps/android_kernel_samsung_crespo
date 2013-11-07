@@ -81,8 +81,7 @@ cmd_make-caps = echo "static const char *const capability_names[] = {" > $@ ;\
 # #define AA_FS_RLIMIT_MASK "fsize stack"
 quiet_cmd_make-rlim = GEN     $@
 cmd_make-rlim = echo "static const char *const rlim_names[RLIM_NLIMITS] = {" \
-+  > $@ ;\
-
+	> $@ ;\
 	sed $< >> $@ -r -n \
 	    -e 's/^\# ?define[ \t]+(RLIMIT_([A-Z0-9_]+)).*/[\1] = "\L\2",/p';\
 	echo "};" >> $@ ;\
@@ -106,6 +105,6 @@ $(obj)/rlim_names.h : $(srctree)/include/asm-generic/resource.h \
 $(obj)/net_names.h : $(srctree)/include/linux/socket.h \
         $(srctree)/include/linux/net.h \
          $(src)/Makefile
-  $(call cmd,make-af)
-  $(call cmd,make-sock)
+	$(call cmd,make-af)
+	$(call cmd,make-sock)
 	

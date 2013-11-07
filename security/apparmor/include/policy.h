@@ -192,7 +192,7 @@ struct aa_profile {
 	struct aa_namespace *ns;
 	const char *rename;
 
-	const cahr *attach;
+	const char *attach;
 	struct aa_dfa *xmatch;
 	int xmatch_len;
 	enum audit_mode audit;

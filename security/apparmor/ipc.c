@@ -117,7 +117,7 @@ int aa_ptrace(struct task_struct *tracer, struct task_struct *tracee,
 		 error = aa_audit_ptrace(labels_profile(tracer_l), labels_profile(tracee_l), error);
 	aa_put_label(tracee_l);
 	}
-	aa_put_label(tracee_l);
+	aa_put_label(tracer_l);
 
 	return error;
 }

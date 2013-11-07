@@ -82,7 +82,7 @@
 #include "include/context.h"
 #include "include/file.h"
 #include "include/ipc.h"
-#include "include/label"
+#include "include/label.h"
 #include "include/match.h"
 #include "include/path.h"
 #include "include/policy.h"
@@ -383,7 +383,7 @@ struct aa_namespace *aa_find_namespace(struct aa_namespace *root,
 
 	rcu_read_lock();
 	ns = aa_get_namespace(__aa_find_namespace(&root->sub_ns, name));
-	rcu_read_unlock(&root->lock);
+	rcu_read_unlock();
 
 	return ns;
 }
@@ -944,7 +944,7 @@ static int replacement_allowed(struct aa_profile *profile, int noreplace,
 			       const char **info)
 {
 	if (profile) {
-		if (profile->label.flags & FLAG_IMMUTBLE) {
+		if (profile->label.flags & FLAG_IMMUTIBLE) {
 			*info = "cannot replace immutible profile";
 			return -EPERM;
 		} else if (noreplace) {
@@ -1298,7 +1298,7 @@ ssize_t aa_replace_profiles(void *udata, size_t size, bool noreplace)
       __add_profile(lh, ent->new);
 	
 		}
-		add_load_ent_free(ent);
+		aa_load_ent_free(ent);
 	}
 	mutex_unlock(&ns->lock);
 

@@ -168,7 +168,7 @@ out:
  *
  * Returns: %0 else error code if could retrieve name
  */
-int aa_path_name(struct path *path, int flags, char **buffer, const char **name,
+int aa_path_name(struct path *path, int flags, char *buffer, const char **name,
 		const char **info)
 {
    char *str = NULL;
