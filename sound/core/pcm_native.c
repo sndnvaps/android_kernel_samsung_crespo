@@ -1508,6 +1508,10 @@ static int snd_pcm_drain(struct snd_pcm_substream *substream,
 		down_read(&snd_pcm_link_rwsem);
 		snd_pcm_stream_lock_irq(substream);
 		remove_wait_queue(&to_check->sleep, &wait);
+		if (card->shutdown) {
+			result = -ENODEV;
+			break;
+		}
 		if (tout == 0) {
 			if (substream->runtime->status->state == SNDRV_PCM_STATE_SUSPENDED)
 				result = -ESTRPIPE;
@@ -1628,6 +1632,7 @@ static int snd_pcm_link(struct snd_pcm_substream *substream, int fd)
  _end:
 	write_unlock_irq(&snd_pcm_link_rwlock);
 	up_write(&snd_pcm_link_rwsem);
+	snd_card_unref(substream1->pcm->card);
 	fput(file);
 	return res;
 }
@@ -2105,7 +2110,10 @@ static int snd_pcm_playback_open(struct inode *inode, struct file *file)
 		return err;
 	pcm = snd_lookup_minor_data(iminor(inode),
 				    SNDRV_DEVICE_TYPE_PCM_PLAYBACK);
-	return snd_pcm_open(file, pcm, SNDRV_PCM_STREAM_PLAYBACK);
+        err = snd_pcm_open(file, pcm, SNDRV_PCM_STREAM_PLAYBACK);
+        snd_card_unref(pcm->card);
+        return err;
+	
 }
 
 static int snd_pcm_capture_open(struct inode *inode, struct file *file)
@@ -2116,7 +2124,10 @@ static int snd_pcm_capture_open(struct inode *inode, struct file *file)
 		return err;
 	pcm = snd_lookup_minor_data(iminor(inode),
 				    SNDRV_DEVICE_TYPE_PCM_CAPTURE);
-	return snd_pcm_open(file, pcm, SNDRV_PCM_STREAM_CAPTURE);
+       err = snd_pcm_open(file, pcm, SNDRV_PCM_STREAM_CAPTURE);
+       snd_card_unref(pcm->card);
+       return err;
+	
 }
 
 static int snd_pcm_open(struct file *file, struct snd_pcm *pcm, int stream)
@@ -2154,6 +2165,10 @@ static int snd_pcm_open(struct file *file, struct snd_pcm *pcm, int stream)
 		mutex_unlock(&pcm->open_mutex);
 		schedule();
 		mutex_lock(&pcm->open_mutex);
+		if (pcm->card->shutdown) {
+			err = -ENODEV;
+			break;
+		}
 		if (signal_pending(current)) {
 			err = -ERESTARTSYS;
 			break;
