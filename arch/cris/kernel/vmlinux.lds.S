@@ -51,8 +51,8 @@ SECTIONS
 	__etext = .;
 
 	EXCEPTION_TABLE(4)
-        
-       _sdata = .;
+
+	_sdata = .;
 	RODATA
 
 	. = ALIGN (4);

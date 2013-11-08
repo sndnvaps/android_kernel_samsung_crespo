@@ -350,8 +350,9 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
 		subs->period_bytes != params_period_bytes(hw_params) ||
 		subs->cur_rate != rate;
 
-	down_read(&subs->stream->chip->shutdowm_rwsem);
-	if (sub->stream->chip->shutdown) {
+
+	down_read(&subs->stream->chip->shutdown_rwsem);
+	if (subs->stream->chip->shutdown) {
 		ret = -ENODEV;
 		goto unlock;
 	}
@@ -378,6 +379,7 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
 						  snd_pcm_format_physical_width(params_format(hw_params)) *
 							params_channels(hw_params));
 	}
+
 unlock:
 	up_read(&subs->stream->chip->shutdown_rwsem);
 	return ret;
@@ -418,7 +420,8 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
 	}
 
 	down_read(&subs->stream->chip->shutdown_rwsem);
-	if (subs->stream->chip->shutdown_mutex) {
+	if (subs->stream->chip->shutdown) {
+
 		ret = -ENODEV;
 		goto unlock;
 	}
@@ -432,11 +435,11 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
 	subs->phase = 0;
 	runtime->delay = 0;
 
-       ret = snd_usb_substream_prepare(subs, runtime);
-unlock:
-      up_read(&subs->stream->chip->shutdown_rwsem);
-       return ret;
 
+	ret = snd_usb_substream_prepare(subs, runtime);
+ unlock:
+	up_read(&subs->stream->chip->shutdown_rwsem);
+	return ret;
 }
 
 static struct snd_pcm_hardware snd_usb_hardware =

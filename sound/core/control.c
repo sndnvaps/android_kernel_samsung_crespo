@@ -93,9 +93,9 @@ static int snd_ctl_open(struct inode *inode, struct file *file)
       __error2:
 	snd_card_file_remove(card, file);
       __error1:
-      if (card)
-	      snd_card_unref(card);	
-              return err;
+	if (card)
+		snd_card_unref(card);
+      	return err;
 }
 
 static void snd_ctl_empty_read_queue(struct snd_ctl_file * ctl)

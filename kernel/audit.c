@@ -382,7 +382,7 @@ static void audit_printk_skb(struct sk_buff *skb)
 	char *data = NLMSG_DATA(nlh);
 
 	if (nlh->nlmsg_type != AUDIT_EOE) {
-			printk(KERN_NOTICE "type=%d %s\n", nlh->nlmsg_type, data);
+		printk(KERN_NOTICE "type=%d %s\n", nlh->nlmsg_type, data);
 	}
 
 	audit_hold_skb(skb);

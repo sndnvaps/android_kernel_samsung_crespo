@@ -1378,7 +1378,7 @@ struct security_operations {
 	int (*binder_set_context_mgr) (struct task_struct *mgr);
 	int (*binder_transaction) (struct task_struct *from, struct task_struct *to);
 	int (*binder_transfer_binder) (struct task_struct *from, struct task_struct *to);
-	int (*binder_transfer_file) (struct task_struct *from, struct task_struct *to ,struct file *file);
+	int (*binder_transfer_file) (struct task_struct *from, struct task_struct *to, struct file *file);
 
 	int (*ptrace_access_check) (struct task_struct *child, unsigned int mode);
 	int (*ptrace_traceme) (struct task_struct *parent);
@@ -1662,7 +1662,7 @@ extern int security_module_enable(struct security_operations *ops);
 extern int register_security(struct security_operations *ops);
 
 /* Security operations */
-int securiry_binder_set_context_mgr(struct task_struct *mgr);
+int security_binder_set_context_mgr(struct task_struct *mgr);
 int security_binder_transaction(struct task_struct *from, struct task_struct *to);
 int security_binder_transfer_binder(struct task_struct *from, struct task_struct *to);
 int security_binder_transfer_file(struct task_struct *from, struct task_struct *to, struct file *file);
@@ -1846,12 +1846,12 @@ static inline int security_init(void)
 	return 0;
 }
 
-static inline int securiry_binder_set_context_mgr(struct task_struct *mgr)
+static inline int security_binder_set_context_mgr(struct task_struct *mgr)
 {
 	return 0;
 }
 
-static inline int security_binder_transaction(struct task_struct *from, struct task_struct *to) 
+static inline int security_binder_transaction(struct task_struct *from, struct task_struct *to)
 {
 	return 0;
 }
@@ -1860,6 +1860,8 @@ static inline int security_binder_transfer_binder(struct task_struct *from, stru
 {
 	return 0;
 }
+
+
 static inline int security_binder_transfer_file(struct task_struct *from, struct task_struct *to, struct file *file)
 {
 	return 0;

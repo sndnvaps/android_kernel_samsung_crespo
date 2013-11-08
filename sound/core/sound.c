@@ -113,12 +113,11 @@ void *snd_lookup_minor_data(unsigned int minor, int type)
 		return NULL;
 	mutex_lock(&sound_mutex);
 	mreg = snd_minors[minor];
-	if (mreg && mreg->type == type)
+	if (mreg && mreg->type == type) {
 		private_data = mreg->private_data;
-        if (mreg->card_ptr)
-		atomic_inc(&mreg->card_ptr->refcount);
-        } else
-
+		if (private_data && mreg->card_ptr)
+			atomic_inc(&mreg->card_ptr->refcount);
+	} else
 		private_data = NULL;
 	mutex_unlock(&sound_mutex);
 	return private_data;

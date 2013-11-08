@@ -394,7 +394,9 @@ static int snd_rawmidi_open(struct inode *inode, struct file *file)
 	if (rmidi == NULL)
 		return -ENODEV;
 
-        if (!try_module_get(rmidi->card->module)) {
+
+	if (!try_module_get(rmidi->card->module)) {
+
 		snd_card_unref(rmidi->card);
 		return -ENXIO;
 	}
@@ -1636,19 +1638,20 @@ static int snd_rawmidi_dev_register(struct snd_device *device)
 static int snd_rawmidi_dev_disconnect(struct snd_device *device)
 {
 	struct snd_rawmidi *rmidi = device->device_data;
-        int dir;
+	int dir;
 
 	mutex_lock(&register_mutex);
 	mutex_lock(&rmidi->open_mutex);
+	wake_up(&rmidi->open_wait);
 	list_del_init(&rmidi->list);
-        for (dir = 0; dir < 2; dir++) {
-             struct snd_rawmidi_substream *s;
-              list_for_each_entry(s, &rmidi->streams[dir].substreams, list) {
-              if (s->runtime)
-              wake_up(&s->runtime->sleep);
-            }
-         }
-	
+	for (dir = 0; dir < 2; dir++) {
+		struct snd_rawmidi_substream *s;
+		list_for_each_entry(s, &rmidi->streams[dir].substreams, list) {
+			if (s->runtime)
+				wake_up(&s->runtime->sleep);
+		}
+	}
+
 #ifdef CONFIG_SND_OSSEMUL
 	if (rmidi->ossreg) {
 		if ((int)rmidi->device == midi_map[rmidi->card->number]) {

@@ -446,36 +446,37 @@ static int snd_card_do_free(struct snd_card *card)
 }
 
 /**
-  * snd_card_unref - release the reference counter
-  * @card: the card instance
-  *
-  * Decrements the reference counter.  When it reaches to zero, wake up
-  * the sleeper and call the destructor if needed.
-  */
+
+ * snd_card_unref - release the reference counter
+ * @card: the card instance
+ *
+ * Decrements the reference counter.  When it reaches to zero, wake up
+ * the sleeper and call the destructor if needed.
+ */
 void snd_card_unref(struct snd_card *card)
- {
-   if (atomic_dec_and_test(&card->refcount)) {
-     wake_up(&card->shutdown_sleep);
-     if (card->free_on_last_close)
-       snd_card_do_free(card);
-   }
+{
+	if (atomic_dec_and_test(&card->refcount)) {
+		wake_up(&card->shutdown_sleep);
+		if (card->free_on_last_close)
+			snd_card_do_free(card);
+	}
 }
 EXPORT_SYMBOL(snd_card_unref);
 
 int snd_card_free_when_closed(struct snd_card *card)
 {
-
 	int ret;
 
-        atomic_inc(&card->refcount);
-        ret = snd_card_disconnect(card);
-        if (ret) {
-              atomic_dec(&card->refcount);
-               return ret;
-        }
+	atomic_inc(&card->refcount);
+	ret = snd_card_disconnect(card);
+	if (ret) {
+		atomic_dec(&card->refcount);
+		return ret;
+	}
 
-        card->free_on_last_close = 1;
-        if (atomic_dec_and_test(&card->refcount))
+	card->free_on_last_close = 1;
+	if (atomic_dec_and_test(&card->refcount))
+
 		snd_card_do_free(card);
 	return 0;
 }
@@ -870,7 +871,7 @@ int snd_card_file_add(struct snd_card *card, struct file *file)
 		return -ENODEV;
 	}
 	list_add(&mfile->list, &card->files_list);
-	tomic_inc(&card->refcount);
+	atomic_inc(&card->refcount);
 	spin_unlock(&card->files_lock);
 	return 0;
 }
@@ -893,7 +894,6 @@ EXPORT_SYMBOL(snd_card_file_add);
 int snd_card_file_remove(struct snd_card *card, struct file *file)
 {
 	struct snd_monitor_file *mfile, *found = NULL;
-	
 
 	spin_lock(&card->files_lock);
 	list_for_each_entry(mfile, &card->files_list, list) {

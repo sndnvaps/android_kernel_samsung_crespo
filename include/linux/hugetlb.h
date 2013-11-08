@@ -315,13 +315,13 @@ static inline unsigned hstate_index_to_shift(unsigned index)
 
 pgoff_t __basepage_index(struct page *page);
 
-  /* Return page->index in PAGE_SIZE units */
+/* Return page->index in PAGE_SIZE units */
 static inline pgoff_t basepage_index(struct page *page)
 {
-  if (!PageCompound(page))
-    return page->index;
+	if (!PageCompound(page))
+		return page->index;
 
-  return __basepage_index(page);
+	return __basepage_index(page);
 }
 
 #else
@@ -345,7 +345,7 @@ static inline unsigned int pages_per_huge_page(struct hstate *h)
 
 static inline pgoff_t basepage_index(struct page *page)
 {
-  return page->index;
+	return page->index;
 }
 
 #endif
