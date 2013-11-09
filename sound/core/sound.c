@@ -109,7 +109,7 @@ void *snd_lookup_minor_data(unsigned int minor, int type)
 	struct snd_minor *mreg;
 	void *private_data;
 
-	if (minor >= ARRAY_SIZE(snd_minors)) {
+	if (minor >= ARRAY_SIZE(snd_minors)) 
 		return NULL;
 	mutex_lock(&sound_mutex);
 	mreg = snd_minors[minor];
