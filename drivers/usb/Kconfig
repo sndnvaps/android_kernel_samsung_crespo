@@ -122,7 +122,7 @@ source "drivers/usb/renesas_usbhs/Kconfig"
 
 source "drivers/usb/dwc/Kconfig"
 
-source "drivers/usb/core/class/Kconfig"
+source "drivers/usb/class/Kconfig"
 
 source "drivers/usb/storage/Kconfig"
 
