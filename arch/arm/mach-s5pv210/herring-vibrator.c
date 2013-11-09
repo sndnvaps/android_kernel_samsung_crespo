@@ -35,8 +35,8 @@
 #define GPD0_TOUT_1		2 << 4
 
 #define PWM_PERIOD		(89284 / 2)
-#define PWM_DUTY_MAX            (87280 / 2)
-#define PWM_DUTY_MIN             22340
+#define PWM_DUTY_MAX		(87280 / 2)
+#define PWM_DUTY_MIN		22340
 
 #define MAX_TIMEOUT		10000 /* 10s */
 
@@ -115,35 +115,35 @@ static void herring_vibrator_enable(struct timed_output_dev *dev, int value)
 }
 
 static ssize_t herring_vibrator_set_duty(struct device *dev,
-          struct device_attribute *attr,
-          const char *buf, size_t size)
+					struct device_attribute *attr,
+					const char *buf, size_t size)
 {
- sscanf(buf, "%d\n", &pwm_duty);
-  if (pwm_duty >= 0 && pwm_duty <= 100) pwm_duty_value = (pwm_duty * multiplier) + PWM_DUTY_MIN;
-  return size;
+	sscanf(buf, "%d\n", &pwm_duty);
+	if (pwm_duty >= 0 && pwm_duty <= 100) pwm_duty_value = (pwm_duty * multiplier) + PWM_DUTY_MIN;
+	return size;
 }
 
 static ssize_t herring_vibrator_show_duty(struct device *dev,
-          struct device_attribute *attr,
-          const char *buf)
+					struct device_attribute *attr,
+					const char *buf)
 {
-  return sprintf(buf, "%d", pwm_duty);
+	return sprintf(buf, "%d", pwm_duty);
 }
 
 static DEVICE_ATTR(pwm_duty, S_IRUGO | S_IWUGO, herring_vibrator_show_duty, herring_vibrator_set_duty);
 
 static struct attribute *pwm_duty_attributes[] = {
-  &dev_attr_pwm_duty,
-  NULL
+	&dev_attr_pwm_duty,
+	NULL
 };
 
 static struct attribute_group pwm_duty_group = {
-  .attrs = pwm_duty_attributes,
+	.attrs = pwm_duty_attributes,
 };
 
 static struct miscdevice pwm_duty_device = {
-  .minor = MISC_DYNAMIC_MINOR,
-  .name = "pwm_duty",
+	.minor = MISC_DYNAMIC_MINOR,
+	.name = "pwm_duty",
 };
 
 static struct timed_output_dev to_dev = {
@@ -201,6 +201,13 @@ static int __init herring_init_vibrator(void)
  }
 
 	
+
+	if (misc_register(&pwm_duty_device))
+		printk("%s misc_register(%s) failed\n", __FUNCTION__, pwm_duty_device.name);
+	else {
+		if (sysfs_create_group(&pwm_duty_device.this_device->kobj, &pwm_duty_group))
+			dev_err(&pwm_duty_device, "failed to create sysfs group for device %s\n", pwm_duty_device.name);
+	}
 
 	return 0;
 

@@ -46,14 +46,13 @@ static struct vfsmount *nfs_do_submount(struct dentry *dentry,
  * server side when automounting on top of an existing partition
  * and in generating /proc/mounts and friends.
  *
- *  Support flags:
- *  NFS_PATH_CANONICAL: ensure there is exactly one slash after
- *                  the original device (export) name
- *                  (if unset, the original name is returned verbatim)
- *
+ * Supported flags:
+ * NFS_PATH_CANONICAL: ensure there is exactly one slash after
+ *		       the original device (export) name
+ *		       (if unset, the original name is returned verbatim)
  */
 char *nfs_path(char **p, struct dentry *dentry, char *buffer, ssize_t buflen,
-		unsigned flags)
+	       unsigned flags)
 {
 	char *end;
 	int namelen;
@@ -103,11 +102,11 @@ rename_retry:
 		return end;
 	}
 	namelen = strlen(base);
-         if (flags & NFS_PATH_CANONICAL) {
-	    /* Strip of excess slashes in base string */
-	while (namelen > 0 && base[namelen - 1] == '/')
-                   namelen--;
-	 }	
+	if (flags & NFS_PATH_CANONICAL) {
+		/* Strip off excess slashes in base string */
+		while (namelen > 0 && base[namelen - 1] == '/')
+			namelen--;
+	}
 	buflen -= namelen;
 	if (buflen < 0) {
 		spin_unlock(&dentry->d_lock);
